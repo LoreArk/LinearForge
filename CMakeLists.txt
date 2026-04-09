@@ -4,13 +4,11 @@ project(LinearForge)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# 1. Trova i pacchetti (Definiscono le variabili/macro internamente)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GLFW REQUIRED glfw3)
 find_package(OpenGL REQUIRED)
 find_package(glm REQUIRED)
 
-# 2. Definisci l'eseguibile con i percorsi corretti dell'Explorer
 add_executable(${PROJECT_NAME} 
     main.cpp 
     glad.c 
@@ -19,7 +17,6 @@ add_executable(${PROJECT_NAME}
     src/Mesh.cpp
 )
 
-# 3. GESTIONE INCLUDE (Qui è dove risolviamo l'errore)
 target_include_directories(${PROJECT_NAME} PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src/systems 
@@ -27,7 +24,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${OPENGL_INCLUDE_DIR}
 )
 
-# 4. Link delle librerie
 target_link_libraries(${PROJECT_NAME} 
     ${GLFW_LIBRARIES} 
     OpenGL::GL

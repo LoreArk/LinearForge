@@ -31,45 +31,45 @@ int main() {
 
     auto mesh = std::make_shared<Mesh>(
             std::vector<float>{
-            //  x      y      z      nx     ny     nz
-                // Davanti (normale 0,0,1)
-            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+                //  x      y      z      nx     ny     nz
+                // front
+                -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
                 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
                 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-                // Dietro (normale 0,0,-1)
+                -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+                // back
                 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+                -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
                 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-                // Sinistra (normale -1,0,0)
-            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-                // Destra (normale 1,0,0)
+                // l
+                -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+                -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+                -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+                -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+                // r
                 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
                 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
                 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
                 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-                // Sopra (normale 0,1,0)
-            -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+                // up
+                -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
                 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
                 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-                // Sotto (normale 0,-1,0)
-            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+                -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+                // down
+                -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
                 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
                 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+                -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
             },
             std::vector<unsigned int>{
-                0, 1, 2,  2, 3, 0,   // davanti
-                4, 5, 6,  6, 7, 4,   // dietro
-                8, 9,10, 10,11, 8,   // sinistra
-                12,13,14, 14,15,12,   // destra
-                16,17,18, 18,19,16,   // sopra
-                20,21,22, 22,23,20,   // sotto
+                0, 1, 2,  2, 3, 0,
+                4, 5, 6,  6, 7, 4,  
+                8, 9,10, 10,11, 8,  
+                12,13,14, 14,15,12,  
+                16,17,18, 18,19,16,  
+                20,21,22, 22,23,20,   
             },
             6  // stride: 3 pos + 3 normal
         );
@@ -87,7 +87,7 @@ int main() {
     transform->spinSpeed = glm::vec3(20.0f, 90.0f, 0.0f);
 
     std::cout << "F. entity created" << std::endl;
-    // dopo forge.init() e prima del loop
+    
     forge.mainShader->use();
     forge.mainShader->setVec3("u_lightPos",    glm::vec3(2.0f, 3.0f, 2.0f));
     forge.mainShader->setVec3("u_lightColor",  glm::vec3(1.0f, 1.0f, 1.0f));

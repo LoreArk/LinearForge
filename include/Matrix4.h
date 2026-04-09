@@ -5,7 +5,7 @@
 #include <cmath>
 
 struct Matrix4 {
-    // I dati della matrice: m[riga][colonna]
+    
     float m[4][4];
 
     Matrix4(); 

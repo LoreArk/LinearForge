@@ -13,11 +13,11 @@ public:
     glm::vec3 spinSpeed = glm::vec3(0.0f);
 
     glm::mat4 getMatrix() const {
-        glm::mat4 m = glm::mat4(1.0f); // matrice identità come punto di partenza
+        glm::mat4 m = glm::mat4(1.0f); 
 
-        m = glm::translate(m, position);           // 3. sposta
-        m = m * glm::mat4_cast(rotation);          // 2. ruota (converte quat → mat4)
-        m = glm::scale(m, scale);                  // 1. scala
+        m = glm::translate(m, position);         
+        m = m * glm::mat4_cast(rotation);         
+        m = glm::scale(m, scale);                 
 
         return m;
     }

@@ -10,19 +10,18 @@
 
 class Shader {
 public:
-    unsigned int ID; // L'ID del programma shader compilato
+    unsigned int ID; // Shader program compiled ID
 
-    // Il costruttore legge e costruisce lo shader
+    // Constructor: reads and build the shader
     Shader(const char* vertexPath, const char* fragmentPath);
     
     ~Shader() {
         if (ID) glDeleteProgram(ID);
     }
 
-    // Attiva lo shader
     void use();
     
-    // Funzioni utility per configurare gli uniform
+    // utilities
     void setBool(const std::string &name, bool value) const;
     void setInt(const std::string &name, int value) const;
     void setFloat(const std::string &name, float value) const;

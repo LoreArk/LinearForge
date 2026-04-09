@@ -2,13 +2,13 @@
 
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath) {
-    // 1. Recupera il codice sorgente dai file
+    // get source code from files
     std::string vertexCode;
     std::string fragmentCode;
     std::ifstream vShaderFile;
     std::ifstream fShaderFile;
     
-    // Assicurati che gli oggetti ifstream possano lanciare eccezioni
+    // 
     vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
     fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
     try {
@@ -27,7 +27,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
     const char* vShaderSource = vertexCode.c_str();
     const char* fShaderSource = fragmentCode.c_str();
 
-    // 2. Compila gli shader
+    // shader compiling
     unsigned int vertex, fragment;
     int success;
     char infoLog[512];
