@@ -19,7 +19,8 @@ add_executable(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME} PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/systems 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/systems
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor 
     ${GLFW_INCLUDE_DIRS}
     ${OPENGL_INCLUDE_DIR}
 )
@@ -34,4 +35,6 @@ add_custom_command(TARGET LinearForge POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/shaders
     ${CMAKE_BINARY_DIR}/shaders
+    ${CMAKE_SOURCE_DIR}/scenes
+    ${CMAKE_BINARY_DIR}/scenes
 )

@@ -3,7 +3,7 @@
 #include "Component.hpp"
 
 struct MaterialComponent : public Component {
-    glm::vec3 color     = glm::vec3(1.0f);   // colore base dell'oggetto
+    glm::vec3 color     = glm::vec3(1.0f);
 
     float ambient   = 0.05f;
     float diffuse   = 0.95f;
