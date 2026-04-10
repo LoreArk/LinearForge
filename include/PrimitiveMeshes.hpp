@@ -1,4 +1,3 @@
-// include/PrimitiveMeshes.hpp
 #pragma once
 #include <memory>
 #include "Mesh.hpp"

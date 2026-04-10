@@ -1,4 +1,3 @@
-// src/systems/LightSystem.hpp
 #pragma once
 #include <vector>
 #include <memory>

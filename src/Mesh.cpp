@@ -1,4 +1,3 @@
-// Mesh.cpp
 #include "Mesh.hpp"
 
 // OLD consturctor

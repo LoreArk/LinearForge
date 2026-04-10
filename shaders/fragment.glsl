@@ -31,7 +31,7 @@ void main() {
     vec3 normal  = normalize(fragNormal);
     vec3 viewDir = normalize(u_viewPos - fragPos);
 
-    // Ambient — ombre profonde e scure
+    // Ambient — deep dark shadows
     vec3 result = u_mat.ambient * u_mat.color;
 
     for (int i = 0; i < u_lightCount; i++) {
@@ -43,12 +43,12 @@ void main() {
         float diff    = max(dot(normal, lightDir), 0.0);
         vec3  diffuse = u_mat.diffuse * diff * l.color * l.intensity;
 
-        // Specular quasi zero — look argilla
+        // Specular 
         vec3  reflectDir = reflect(-lightDir, normal);
         float spec       = pow(max(dot(viewDir, reflectDir), 0.0), u_mat.shininess);
         vec3  specular   = u_mat.specular * spec * l.color * l.intensity;
 
-        // Attenuazione point light
+        // Point light attenuation
         float dist = length(l.position - fragPos);
         float att  = 1.0 / (1.0 + 0.14 * dist + 0.07 * dist * dist);
 
@@ -56,13 +56,13 @@ void main() {
     }
 
     // ── Color grading ────────────────────────────────────────────
-    // Contrast: schiaccia i mezzitoni, esalta neri e bianchi
+    // Contrast: flatens half tones, enhances blacks and whites
     result = (result - 0.5) * 1.4 + 0.5;
 
-    // Subtle warm tint — aggiunge quel senso di luce artificiale/lampada
+    // Subtle warm tint
     result *= vec3(1.05, 0.98, 0.92);
 
-    // Clamp finale
+    // Final clamp
     result = clamp(result, 0.0, 1.0);
     // ─────────────────────────────────────────────────────────────
 

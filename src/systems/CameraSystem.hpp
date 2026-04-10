@@ -1,4 +1,3 @@
-// src/systems/CameraSystem.hpp
 #pragma once
 #include <vector>
 #include <memory>

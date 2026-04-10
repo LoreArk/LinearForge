@@ -14,7 +14,7 @@ public:
             auto* ic = entity->getComponent<InputComponent>();
             if (!ic) continue;
 
-            // Tastiera — polling
+            // Keyboard polling
             ic->forward  = glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS;
             ic->backward = glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS;
             ic->left     = glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS;

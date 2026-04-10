@@ -1,4 +1,3 @@
-// include/InputComponent.hpp
 #pragma once
 #include <glm/glm.hpp>
 #include "Component.hpp"

@@ -1,4 +1,3 @@
-// src/systems/RenderSystem.hpp
 #pragma once
 #include <vector>
 #include <memory>

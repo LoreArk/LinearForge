@@ -40,11 +40,11 @@
         "spin":     [0.0, 0.0, 0.0]
     },
     "material": {
-        "color":     [1.0, 1.0, 1.0], 
+        "color":     [0.3, 0.3, 0.3], 
         "ambient":   0.5,
         "diffuse":   0.8,
         "specular":  0.5,
-        "shininess": 1.0
+        "shininess": 0.5
     },
     "mesh": "plane"
     },
