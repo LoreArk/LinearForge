@@ -33,9 +33,9 @@ void Engine::update() {
     lastFrame = currentFrame;
 
     glfwPollEvents();
-
+    
     if (currentScene)
-        currentScene->update(deltaTime);
+        currentScene->update(deltaTime, window);
 }
 
 void Engine::render() {

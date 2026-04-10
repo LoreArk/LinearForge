@@ -5,6 +5,9 @@
 #include "Entity.hpp"
 #include "RenderComponent.hpp"
 #include "Camera.hpp"
+#include "LightSystem.hpp"
+#include "CameraSystem.hpp"
+#include "InputSystem.hpp"
 #include "TransformSystem.hpp"
 #include "RenderSystem.hpp"
 
@@ -15,11 +18,14 @@ public:
 
     Camera camera;
 
-    void update(float deltaTime) {
-        TransformSystem::update(entities, deltaTime);
+    void update(float deltaTime, GLFWwindow* window) {
+        InputSystem::update(entities, window);          
+        CameraSystem::update(entities, camera, deltaTime);
+        TransformSystem::update(entities, deltaTime);   
     }
 
     void render(Shader* shader) {
+        LightSystem::update(entities, shader);
         RenderSystem::render(entities, shader, camera);
     }
 

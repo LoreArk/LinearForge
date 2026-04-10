@@ -1,35 +1,70 @@
 #version 460 core
 
+#define MAX_LIGHTS 8
+
+struct Light {
+    vec3  position;
+    vec3  color;
+    float intensity;
+    int   type;
+};
+
+struct Material {
+    vec3  color;
+    float ambient;
+    float diffuse;
+    float specular;
+    float shininess;
+};
+
+uniform Light    u_lights[MAX_LIGHTS];
+uniform int      u_lightCount;
+uniform Material u_mat;
+uniform vec3     u_viewPos;
+
 in vec3 fragPos;
 in vec3 fragNormal;
-
-uniform vec3 u_lightPos;      // posizione della luce nel world space
-uniform vec3 u_viewPos;       // posizione della camera (per specular)
-uniform vec3 u_objectColor;   // colore dell'oggetto
-uniform vec3 u_lightColor;    // colore della luce
 
 out vec4 FragColor;
 
 void main() {
-    vec3 normal   = normalize(fragNormal);
-    vec3 lightDir = normalize(u_lightPos - fragPos);
-    vec3 viewDir  = normalize(u_viewPos  - fragPos);
+    vec3 normal  = normalize(fragNormal);
+    vec3 viewDir = normalize(u_viewPos - fragPos);
 
-    // Ambient — luce base sempre presente
-    float ambientStrength = 0.15;
-    vec3 ambient = ambientStrength * u_lightColor;
+    // Ambient — ombre profonde e scure
+    vec3 result = u_mat.ambient * u_mat.color;
 
-    // Diffuse — dipende dall'angolo luce/normale (dot product)
-    // max(0) evita valori negativi quando la luce è dietro la faccia
-    float diff    = max(dot(normal, lightDir), 0.0);
-    vec3 diffuse  = diff * u_lightColor;
+    for (int i = 0; i < u_lightCount; i++) {
+        Light l = u_lights[i];
 
-    // Specular — riflesso, dipende dall'angolo vista/riflesso
-    float specularStrength = 0.5;
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec      = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
-    vec3 specular   = specularStrength * spec * u_lightColor;
+        vec3 lightDir = normalize(l.position - fragPos);
 
-    vec3 result = (ambient + diffuse + specular) * u_objectColor;
-    FragColor   = vec4(result, 1.0);
+        // Diffuse
+        float diff    = max(dot(normal, lightDir), 0.0);
+        vec3  diffuse = u_mat.diffuse * diff * l.color * l.intensity;
+
+        // Specular quasi zero — look argilla
+        vec3  reflectDir = reflect(-lightDir, normal);
+        float spec       = pow(max(dot(viewDir, reflectDir), 0.0), u_mat.shininess);
+        vec3  specular   = u_mat.specular * spec * l.color * l.intensity;
+
+        // Attenuazione point light
+        float dist = length(l.position - fragPos);
+        float att  = 1.0 / (1.0 + 0.14 * dist + 0.07 * dist * dist);
+
+        result += (diffuse + specular) * att * u_mat.color;
+    }
+
+    // ── Color grading ────────────────────────────────────────────
+    // Contrast: schiaccia i mezzitoni, esalta neri e bianchi
+    result = (result - 0.5) * 1.4 + 0.5;
+
+    // Subtle warm tint — aggiunge quel senso di luce artificiale/lampada
+    result *= vec3(1.05, 0.98, 0.92);
+
+    // Clamp finale
+    result = clamp(result, 0.0, 1.0);
+    // ─────────────────────────────────────────────────────────────
+
+    FragColor = vec4(result, 1.0);
 }

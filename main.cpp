@@ -1,99 +1,110 @@
-#include <glad/glad.h>  // MUST be first: manages OpenGL function pointers
-#include <GLFW/glfw3.h> // Manages window and input
-#include <glm/glm.hpp>  // Core GLM math (vec3, mat4)
-#include <glm/gtc/matrix_transform.hpp> // Matrix transformations (translate, scale, ortho)
-#include <glm/gtc/type_ptr.hpp>        // Conversion from GLM matrices to raw float arrays for GPU
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "include/Engine.hpp"
 #include "TransformComponent.h"
 #include "RenderComponent.hpp"
+#include "MaterialComponent.hpp"  
+#include "LightComponent.hpp"    
 #include "Mesh.hpp"
 #include <iostream>
 
 int main() {
     Engine forge;
-    std::cout << "A. engine created" << std::endl;
-    
     if (!forge.init(1280, 720, "Linear Forge Engine"))
         return -1;
-    std::cout << "B. init done" << std::endl;
 
     Scene* scene = forge.createScene();
-    std::cout << "C. scene created" << std::endl;
-
     scene->camera = Camera(
-        glm::vec3(0.0f, 0.0f, 3.0f),
+        glm::vec3(0.0f, 0.0f, 4.0f),
         glm::vec3(0.0f, 0.0f, 0.0f),
         45.0f,
         1280.0f / 720.0f
     );
 
-    std::cout << "D. camera set" << std::endl;
+    Entity* player = scene->addEntity();
+    player->addComponent<InputComponent>();
 
-    auto mesh = std::make_shared<Mesh>(
-            std::vector<float>{
-                //  x      y      z      nx     ny     nz
-                // front
-                -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-                0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-                0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-                -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-                // back
-                0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-                0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-                // l
-                -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-                -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-                -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-                -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-                // r
-                0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-                0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-                0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-                0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-                // up
-                -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-                0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-                0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-                // down
-                -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-                0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-                0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-            },
-            std::vector<unsigned int>{
-                0, 1, 2,  2, 3, 0,
-                4, 5, 6,  6, 7, 4,  
-                8, 9,10, 10,11, 8,  
-                12,13,14, 14,15,12,  
-                16,17,18, 18,19,16,  
-                20,21,22, 22,23,20,   
-            },
-            6  // stride: 3 pos + 3 normal
-        );
-    
-    std::cout << "E. mesh created" << std::endl;
+    glfwSetInputMode(forge.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+    // ── Mesh ─────────────────────────────────────────────
+    auto cubeMesh = std::make_shared<Mesh>(
+        std::vector<float>{
+        //  x      y      z      nx     ny     nz
+            // Davanti
+           -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+            0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+            0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+           -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+            // Dietro
+            0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+           -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+           -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            // Sinistra
+           -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+           -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+           -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+           -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            // Destra
+            0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+            0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+            // Sopra
+           -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+           -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+            // Sotto
+           -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+            0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+            0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+           -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        },
+        std::vector<unsigned int>{
+             0, 1, 2,  2, 3, 0,
+             4, 5, 6,  6, 7, 4,
+             8, 9,10, 10,11, 8,
+            12,13,14, 14,15,12,
+            16,17,18, 18,19,16,
+            20,21,22, 22,23,20,
+        },
+        6
+    );
+
+    // ── Cube ──────────────────────────────────────────────────────
     Entity* cube = scene->addEntity();
-    
-    cube->addComponent<TransformComponent>();
-    cube->addComponent<RenderComponent>(mesh);
+    auto* transform = cube->addComponent<TransformComponent>();
+    cube->addComponent<RenderComponent>(cubeMesh);
+    auto* mat = cube->addComponent<MaterialComponent>();
+    mat->color = glm::vec3(0.7f, 0.45f, 0.3f);
+    transform->spinSpeed = glm::vec3(0.0f, 30.0f, 10.0f);
 
-    auto* transform = cube->getComponent<TransformComponent>();
-    transform->position = glm::vec3(1.0f, 0.0f, 0.0f);
-    transform->scale    = glm::vec3(1.0f);
-    transform->spinSpeed = glm::vec3(20.0f, 90.0f, 0.0f);
+    Entity* cube2 = scene->addEntity();
+    auto* transform2 = cube2->addComponent<TransformComponent>();
+    cube2->addComponent<RenderComponent>(cubeMesh);
+    auto* mat2 = cube2->addComponent<MaterialComponent>();
+    mat2->color = glm::vec3(0.0f, 0.45f, 0.0f);
+    transform2->position = glm::vec3(5.f, 0.f, 0.f);
+    transform2->spinSpeed = glm::vec3(0.0f, 30.0f, 10.0f);
 
-    std::cout << "F. entity created" << std::endl;
-    
-    forge.mainShader->use();
-    forge.mainShader->setVec3("u_lightPos",    glm::vec3(2.0f, 3.0f, 2.0f));
-    forge.mainShader->setVec3("u_lightColor",  glm::vec3(1.0f, 1.0f, 1.0f));
-    forge.mainShader->setVec3("u_objectColor", glm::vec3(0.4f, 0.6f, 0.9f));
-    forge.mainShader->setVec3("u_viewPos",     glm::vec3(0.0f, 0.0f, 3.0f));
-    std::cout << "G. entering loop" << std::endl;
+    // ── Lights ──────────────────────────────────────────────────────
+    Entity* sun = scene->addEntity();
+    auto* sunLight = sun->addComponent<LightComponent>();
+    sunLight->color     = glm::vec3(1.0f, 0.92f, 0.75f);
+    sunLight->intensity = 3.0f;
+    sun->addComponent<TransformComponent>()->position = glm::vec3(3.0f, 4.0f, 2.0f);
+
+    Entity* fill = scene->addEntity();
+    auto* fillLight = fill->addComponent<LightComponent>();
+    fillLight->color     = glm::vec3(0.4f, 0.5f, 0.8f);
+    fillLight->intensity = 3.f;
+    fill->addComponent<TransformComponent>()->position = glm::vec3(-2.0f, -1.0f, 1.0f);
+
+    // ── Loop ──────────────────────────────────────────────────────
     while (forge.isRunning()) {
         forge.update();
         forge.render();

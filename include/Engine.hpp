@@ -25,8 +25,8 @@ public:
     Scene* getScene() { return currentScene; }
     
     Shader* mainShader;
-private:
     GLFWwindow* window;
+private:
     
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
