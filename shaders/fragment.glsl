@@ -22,12 +22,20 @@ uniform int      u_lightCount;
 uniform Material u_mat;
 uniform vec3     u_viewPos;
 
+uniform bool u_wireframe;
+
 in vec3 fragPos;
 in vec3 fragNormal;
 
 out vec4 FragColor;
 
 void main() {
+
+    if (u_wireframe) {
+        FragColor = vec4(0.0, 1.0, 0.0, 1.0); // verde fisso
+        return;
+    }
+
     vec3 normal  = normalize(fragNormal);
     vec3 viewDir = normalize(u_viewPos - fragPos);
 

@@ -15,6 +15,17 @@ bool Engine::init(int width, int height, const char* title) {
     std::cout << "3. make context current" << std::endl;
     glfwMakeContextCurrent(window);
     
+    glfwSetWindowUserPointer(window, this);
+    glfwSetKeyCallback(window, [](GLFWwindow* w, int key, int scancode, int action, int mods) {
+        Engine* engine = static_cast<Engine*>(glfwGetWindowUserPointer(w));
+        if (action == GLFW_PRESS) {
+            if (key == GLFW_KEY_F)
+                engine->toggleWireframe();
+            if (key == GLFW_KEY_ESCAPE)
+                glfwSetWindowShouldClose(w, true);
+        }
+    });
+
     std::cout << "4. load glad" << std::endl;
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) return false;
     
@@ -63,4 +74,11 @@ void Engine::terminate() {
 
 Engine::~Engine() {
     terminate();
+}
+
+void Engine::toggleWireframe() {
+    wireframe = !wireframe;
+    glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
+    mainShader->use();
+    mainShader->setBool("u_wireframe", wireframe);
 }

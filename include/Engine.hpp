@@ -27,7 +27,10 @@ public:
     Shader* mainShader;
     GLFWwindow* window;
 private:
-    
+
+    bool wireframe = false;
+    void toggleWireframe();
+
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
 

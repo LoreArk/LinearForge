@@ -3,6 +3,7 @@
 #include "MeshLibrary.hpp"
 #include "Mesh.hpp"
 #include "PrimitiveMeshes.hpp"
+#include "HotReloader.hpp"
 #include <iostream>
 
 int main() {
@@ -24,11 +25,17 @@ int main() {
         45.0f, 1280.0f / 720.0f
     );
 
-    SceneLoader::load("../scenes/main.json", *scene, meshLib);
-
+    HotReloader reloader(
+        "scenes/main.json",      
+        "../scenes/main.json",  
+        *scene,
+        meshLib
+    );
+    
     glfwSetInputMode(forge.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     
     while (forge.isRunning()) {
+        reloader.update(); // < "editor" updater
         forge.update();
         forge.render();
     }
